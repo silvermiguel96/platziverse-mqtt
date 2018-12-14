@@ -24,6 +24,7 @@
     "chalk": "^2.4.1",
     "debug": "^4.1.0",
     "mosca": "^2.8.3",
+    "platziverse-db": "file:///home/miguelangel/Documentos/Platzi/Nodejs/Avanzado/platziverse/platziverse-db",
     "redis": "^2.8.0"
   }
 }
