@@ -74,16 +74,21 @@ server.on('published', async (packet, client) => {
     case 'agent/message':
       debug(`Payload: ${packet.payload}`)
       const payload = parsePayload(packet.payload)
-
-      if (payload) {
-        payload.agent.connected = true
-
-        let agent
+      const saveMetricsPromises = payload.metrics.map(async (metric) => {
+        let createdMetric
         try {
-          agent = await Agent.createOrUpdate(payload.agent)
-        } catch (e) {
-          return handleError(e)
+          createdMetric = await Metric.create(savedAgent.uuid, metric)
+        } catch (error) {
+          return handleError
         }
+        debug(`Metric ${createdMetric.id} saved on agent ${savedAgent.uuid}`)
+      })
+    
+      try {
+        await Promise.all(saveMetricsPromises)
+      } catch (error) {
+        return handleError(error)
+      }
         debug(`Agent  ${agent.uuid} saved`)
         // Notify Agent is Connected
         if (!clients.get(client.id)) {
